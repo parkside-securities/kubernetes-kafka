@@ -53,6 +53,8 @@ spec:
           value: -Dlog4j.configuration=file:/etc/kafka/log4j.properties
         - name: JMX_PORT
           value: "5555"
+        - name: KAFKA_OPTS
+          value: "-Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf"
         ports:
         - name: inside
           containerPort: 9092
@@ -87,6 +89,9 @@ spec:
           mountPath: /var/lib/kafka/data
         - name: extensions
           mountPath: /opt/kafka/libs/extensions
+        - name: kafka-jaas-config
+          mountPath: /etc/kafka/kafka_server_jaas.conf
+          subPath: kafka_server_jaas.conf
       volumes:
       - name: configmap
         configMap:
