@@ -92,8 +92,8 @@ data:
     listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL,OUTSIDE:SASL_PLAINTEXT
     inter.broker.listener.name=PLAINTEXT
 
-    sasl.enabled.mechanisms=PLAIN
-    sasl.mechanism.inter.broker.protocol=PLAIN
+    sasl.enabled.mechanisms=SCRAM-SHA-256
+    sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
 
     # The number of threads that the server uses for receiving requests from the network and sending responses to the network
     #num.network.threads=3
