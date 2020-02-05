@@ -7,7 +7,18 @@ data:
        username="admin"
        password="admin-secret"
        user_admin="admin-secret"
-       user_client="client-secret";
+       user_client="client-secret"
+       sasl.mechanism=PLAIN
+       security.protocol=SASL_PLAINTEXT;
+
+       org.apache.kafka.common.security.scram.ScramLoginModule required
+       serviceName="server"
+       username="admin"
+       password="admin-secret"
+       user_admin="admin-secret"
+       user_client="client-secret"
+       sasl.mechanism=SCRAM-SHA-256
+       security.protocol=SASL_PLAINTEXT;
     };
     Client {
     };
