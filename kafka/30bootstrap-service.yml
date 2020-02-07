@@ -6,6 +6,6 @@ metadata:
   namespace: kafka
 spec:
   ports:
-    - port: 9094
+  - port: 9094
   selector:
     app: kafka
