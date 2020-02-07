@@ -43,6 +43,12 @@ spec:
           mountPath: /etc/kafka
         - name: extensions
           mountPath: /opt/kafka/libs/extensions
+      - name: scram-config
+        image: solsson/kafka:2.3.0@sha256:b59603a8c0645f792fb54e9571500e975206352a021d6a116b110945ca6c3a1d
+        env:
+        - name: CLASSPATH
+          value: /opt/kafka/libs/extensions/*
+        command: ["/opt/kafka/bin/kafka-configs.sh", "--zookeeper", "zoo:2181", "--alter", "--add-config", "SCRAM-SHA-256=[password=client-secret]", "--entity-type", "users", "--entity-name", "client"]
       containers:
       - name: broker
         image: solsson/kafka:2.3.0@sha256:b59603a8c0645f792fb54e9571500e975206352a021d6a116b110945ca6c3a1d
@@ -53,6 +59,8 @@ spec:
           value: -Dlog4j.configuration=file:/etc/kafka/log4j.properties
         - name: JMX_PORT
           value: "5555"
+        - name: KAFKA_OPTS
+          value: "-Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf"
         ports:
         - name: inside
           containerPort: 9092
@@ -87,6 +95,9 @@ spec:
           mountPath: /var/lib/kafka/data
         - name: extensions
           mountPath: /opt/kafka/libs/extensions
+        - name: kafka-jaas-config
+          mountPath: /etc/kafka/kafka_server_jaas.conf
+          subPath: kafka_server_jaas.conf
       volumes:
       - name: configmap
         configMap:
@@ -95,6 +106,9 @@ spec:
         emptyDir: {}
       - name: extensions
         emptyDir: {}
+      - name: kafka-jaas-config
+        configMap:
+          name: kafka-jaas-config
   volumeClaimTemplates:
   - metadata:
       name: data

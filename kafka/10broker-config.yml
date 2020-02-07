@@ -28,7 +28,7 @@ data:
 
       OUTSIDE_HOST=$(kubectl get node "$NODE_NAME" -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
       OUTSIDE_PORT=$((32400 + ${KAFKA_BROKER_ID}))
-      SEDS+=("s|#init#advertised.listeners=PLAINTEXT://#init#|advertised.listeners=PLAINTEXT://:9092,OUTSIDE://${OUTSIDE_HOST}:${OUTSIDE_PORT}|")
+      SEDS+=("s|#init#advertised.listeners=PLAINTEXT://#init#|advertised.listeners=PLAINTEXT://:9092,SASL_PLAINTEXT://:9094,OUTSIDE://${OUTSIDE_HOST}:${OUTSIDE_PORT}|")
       ANNOTATIONS="$ANNOTATIONS kafka-listener-outside-host=$OUTSIDE_HOST kafka-listener-outside-port=$OUTSIDE_PORT"
 
       if [ ! -z "$LABELS" ]; then
@@ -51,7 +51,7 @@ data:
     # The default number of log partitions per topic. More partitions allow greater
     # parallelism for consumption, but this will also result in more files across
     # the brokers.
-    num.partitions=12
+    num.partitions=3
 
     default.replication.factor=3
 
@@ -79,7 +79,7 @@ data:
     #   EXAMPLE:
     #     listeners = PLAINTEXT://your.host.name:9092
     #listeners=PLAINTEXT://:9092
-    listeners=PLAINTEXT://:9092,OUTSIDE://:9094
+    listeners=PLAINTEXT://:9092,SASL_PLAINTEXT://:9094,OUTSIDE://:9095
 
     # Hostname and port the broker will advertise to producers and consumers. If not set, 
     # it uses the value for "listeners" if configured.  Otherwise, it will use the value
@@ -91,6 +91,9 @@ data:
     #listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
     listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL,OUTSIDE:PLAINTEXT
     inter.broker.listener.name=PLAINTEXT
+
+    sasl.enabled.mechanisms=PLAIN,SCRAM-SHA-256
+    #sasl.mechanism.inter.broker.protocol=PLAIN
 
     # The number of threads that the server uses for receiving requests from the network and sending responses to the network
     #num.network.threads=3
@@ -166,6 +169,8 @@ data:
 
     # Timeout in ms for connecting to zookeeper
     #zookeeper.connection.timeout.ms=6000
+
+    zookeeper.sasl.enabled=false
 
 
     ############################# Group Coordinator Settings #############################
