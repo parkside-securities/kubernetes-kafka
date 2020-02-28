@@ -1,0 +1,5 @@
+resources:
+- node-reader.yml
+- aws-storageclass-broker-gp2.yaml
+- aws-storageclass-zookeeper-gp2.yaml
+
