@@ -44,14 +44,14 @@ spec:
         - name: extensions
           mountPath: /opt/kafka/libs/extensions
       - name: scram-config
-        image: solsson/kafka:2.3.0@sha256:b59603a8c0645f792fb54e9571500e975206352a021d6a116b110945ca6c3a1d
+        image: solsson/kafka:2.6.0@sha256:5ced938efe9b4dd414a63b10cda8324558f01c1ed37608102bab7777cf811e31
         env:
         - name: CLASSPATH
           value: /opt/kafka/libs/extensions/*
         command: ["/opt/kafka/bin/kafka-configs.sh", "--zookeeper", "zoo:2181", "--alter", "--add-config", "SCRAM-SHA-256=[password=client-secret]", "--entity-type", "users", "--entity-name", "client"]
       containers:
       - name: broker
-        image: solsson/kafka:2.3.0@sha256:b59603a8c0645f792fb54e9571500e975206352a021d6a116b110945ca6c3a1d
+        image: solsson/kafka:2.6.0@sha256:5ced938efe9b4dd414a63b10cda8324558f01c1ed37608102bab7777cf811e31
         env:
         - name: CLASSPATH
           value: /opt/kafka/libs/extensions/*
