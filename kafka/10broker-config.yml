@@ -26,9 +26,10 @@ data:
         LABELS="$LABELS kafka-broker-rack=$ZONE"
       fi
 
+      [ -z "$ADVERTISE_ADDR" ] && echo "ADVERTISE_ADDR is empty, will advertise detected DNS name"
       OUTSIDE_HOST=$(kubectl get node "$NODE_NAME" -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
       OUTSIDE_PORT=$((32400 + ${KAFKA_BROKER_ID}))
-      SEDS+=("s|#init#advertised.listeners=PLAINTEXT://#init#|advertised.listeners=PLAINTEXT://:9092,SASL_PLAINTEXT://:9094,OUTSIDE://${OUTSIDE_HOST}:${OUTSIDE_PORT}|")
+      SEDS+=("s|#init#advertised.listeners=PLAINTEXT://#init#|advertised.listeners=PLAINTEXT://${ADVERTISE_ADDR}:9092,SASL_PLAINTEXT://${ADVERTISE_ADDR}:9094,OUTSIDE://${OUTSIDE_HOST}:${OUTSIDE_PORT}|")
       ANNOTATIONS="$ANNOTATIONS kafka-listener-outside-host=$OUTSIDE_HOST kafka-listener-outside-port=$OUTSIDE_PORT"
 
       if [ ! -z "$LABELS" ]; then
@@ -40,6 +41,7 @@ data:
     }
     printf '%s\n' "${SEDS[@]}" | sed -f - /etc/kafka-configmap/server.properties > /etc/kafka/server.properties.tmp
     [ $? -eq 0 ] && mv /etc/kafka/server.properties.tmp /etc/kafka/server.properties
+    ln -s /etc/kafka/server.properties /etc/kafka/server.properties.$POD_NAME
 
   server.properties: |-
     ############################# Log Basics #############################
@@ -168,7 +170,7 @@ data:
     zookeeper.connect=zookeeper:2181
 
     # Timeout in ms for connecting to zookeeper
-    #zookeeper.connection.timeout.ms=6000
+    #zookeeper.connection.timeout.ms=18000
 
     zookeeper.sasl.enabled=false
 

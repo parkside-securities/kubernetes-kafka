@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: kafka-minion
-        image: solsson/kafka-consumers-prometheus@sha256:039d0bc0c1bdfa8b2e515e4c05ab8490492c65b43830579ce76d36278f33d447
+        image: solsson/kafka-consumers-prometheus@sha256:4fb3e8bd5e70f14cbb9168d3259f7a7b601a1cf9af29f88ad239bc5d7e43ee30
         env:
         - name: TELEMETRY_HOST
           value: 0.0.0.0
@@ -33,7 +33,7 @@ spec:
         - name: LOG_LEVEL
           value: info
         - name: KAFKA_BROKERS
-          value: kafka-0.broker:9092, kafka-1.broker:9092, kafka-2.broker:9092
+          value: bootstrap:9092
         - name: KAFKA_CONSUMER_OFFSETS_TOPIC_NAME
           value: __consumer_offsets
         ports:
